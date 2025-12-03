@@ -58,22 +58,27 @@
             </form>
         </div>
 
-        <!-- Article list -->
-        {% for article in articles %}
-            <div class="mb-4 p-4 bg-white rounded-lg shadow">
-                <h2 class="text-lg font-bold">{{ article.title }}</h2>
-                <p class="mt-2">{{ article.content|truncatewords:20 }}</p>
+       <!-- Article list -->
+            {% if articles %}
+              {% for article in articles %}
+        <div class="mb-4 p-4 bg-white rounded-lg shadow">
+            <h2 class="text-lg font-bold">{{ article.title }}</h2>
+            <p class="mt-2">{{ article.content|truncatewords:20 }}</p>
 
-                {% if article.link %}
-                    <a href="{{ article.link }}" target="_blank"
-                       class="text-blue-600 hover:underline">
-                        Baca Selengkapnya →
-                    </a>
-                {% endif %}
-            </div>
-        {% empty %}
-            <p class="text-center text-gray-500">Tidak ada artikel ditemukan.</p>
-        {% endfor %}
+            {% if article.link %}
+                <a href="{{ article.link }}" target="_blank"
+                   class="text-blue-600 hover:underline">
+                    Baca Selengkapnya →
+                </a>
+            {% endif %}
+        </div>
+                {% endfor %}
+                      {% else %}
+            <p class="text-center text-red-500 font-medium">
+                    Tidak ada artikel yang cocok dengan pencarian.
+            </p>
+                 {% endif %}
+
 
     </main>
 
