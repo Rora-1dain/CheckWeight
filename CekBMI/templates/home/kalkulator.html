@@ -134,7 +134,6 @@
 
     // UI elements
     const btnCalc = document.getElementById('btn-calc');
-    const panelCalc = document.getElementById('panel-calc');
     const form = document.getElementById('bmi-form');
     const resultCard = document.getElementById('result-card');
     const avatarBox = document.getElementById('avatar-box');
@@ -146,9 +145,6 @@
     const timeEstimateEl = document.getElementById('time-estimate');
     const adviceArea = document.getElementById('advice-area');
 
-
-    // Toggle panels
-    btnCalc.addEventListener('click', ()=>{ panelCalc.scrollIntoView({behavior:'smooth'}) });
 
     // BMI calculation & ideal weight estimation
     function calculateBMI(weightKg, heightCm){
