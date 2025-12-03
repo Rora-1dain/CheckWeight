@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>CheckWeight — Artikel</title>
+
+    <style>
+        .avatar-box { width:160px; height:160px; display:flex; align-items:center; justify-content:center; border-radius:12px; }
+        .pulse { animation: pulse 1.6s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.03); } 100% { transform: scale(1); } }
+        .soft-card { box-shadow: 0 6px 18px rgba(16,24,40,0.06), 0 1px 2px rgba(16,24,40,0.04); }
+    </style>
+</head>
+
+<body class="bg-gradient-to-br from-slate-50 to-white min-h-screen text-slate-800">
+<div class="max-w-6xl mx-auto p-6">
+
+    <!-- Header -->
+    <header class="flex items-center justify-between mb-6">
+        <div class="flex items-center gap-4">
+            <a href="{% url 'kalkulator' %}" class="w-12 h-12 bg-gradient-to-tr from-violet-500 to-fuchsia-500 text-white rounded-xl flex items-center justify-center text-2xl font-bold">CW</a>
+            <div>
+                <h1 class="text-2xl font-extrabold">CheckWeight</h1>
+                <p class="text-sm text-slate-500">Artikel kesehatan singkat</p>
+            </div>
+        </div>
+        <nav>
+            <a href="{% url 'kalkulator' %}" class="px-4 py-2 rounded-lg bg-white soft-card hover:shadow-md">Kalkulator</a>
+        </nav>
+    </header>
+
+    <main>
+
+        <!-- Search -->
+        <form method="GET" action="{% url 'artikel' %}" class="flex gap-2">
+            <input type="text" name="q" placeholder="Cari artikel..." value="{{ request.GET.q }}"
+                   class="border p-2 rounded w-full">
+            <button type="submit" class="bg-blue-500 text-white px-3 py-2 rounded">Search</button>
+        </form>
+
+        <hr class="my-4">
+
+        <!-- Filter Category -->
+        <div class="mb-4">
+            <form method="GET" action="">
+                <select id="article-category" name="category"
+                        class="rounded-lg border px-3 py-2 text-sm"
+                        onchange="this.form.submit()">
+                    <option value="all">Semua Kategori</option>
+                    {% for c in categories %}
+                        <option value="{{ c.id }}" {% if selected_category == c.id|stringformat:'s' %}selected{% endif %}>
+                            {{ c.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </form>
+        </div>
+
+        <!-- Article list -->
+        {% for article in articles %}
+            <div class="mb-4 p-4 bg-white rounded-lg shadow">
+                <h2 class="text-lg font-bold">{{ article.title }}</h2>
+                <p class="mt-2">{{ article.content|truncatewords:20 }}</p>
+
+                {% if article.link %}
+                    <a href="{{ article.link }}" target="_blank"
+                       class="text-blue-600 hover:underline">
+                        Baca Selengkapnya →
+                    </a>
+                {% endif %}
+            </div>
+        {% empty %}
+            <p class="text-center text-gray-500">Tidak ada artikel ditemukan.</p>
+        {% endfor %}
+
+    </main>
+
+    <footer class="mt-8 text-center text-sm text-slate-500">
+        © 2025 CheckWeight. Data hanya untuk edukasi.
+    </footer>
+
+</div>
+
+<!-- Modal (Tetap disimpan untuk masa depan) -->
+<div id="modal" class="fixed inset-0 bg-black/40 hidden items-center justify-center p-4">
+    <div class="bg-white w-full max-w-2xl rounded-2xl p-6 soft-card relative">
+        <button id="modal-close" class="absolute right-4 top-4 text-slate-500">✕</button>
+        <h4 id="modal-title" class="text-xl font-bold"></h4>
+        <div id="modal-meta" class="text-xs text-slate-500 mt-1"></div>
+        <div id="modal-body" class="mt-4 text-slate-700"></div>
+    </div>
+</div>
+
+<script>
+    // Modal close only (UI tetap ada tapi tidak pakai DB dulu)
+    const modal = document.getElementById('modal');
+    const modalClose = document.getElementById('modal-close');
+
+    modalClose.addEventListener('click', () => {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+    });
+</script>
+
+</body>
+</html>
