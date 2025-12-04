@@ -86,7 +86,10 @@
                 <div class="p-3 rounded-lg bg-white soft-card">
                   <div class="text-xs text-slate-500">Estimasi Waktu Sehat</div>
                   <div id="time-estimate" class="text-lg font-bold">-- minggu</div>
+<<<<<<< HEAD
                   <div id="time-note" class="text-xs text-slate-500 mt-1">Perkiraan waktu untuk mencapai berat ideal dengan cara sehat.</div>
+=======
+>>>>>>> e03066974b025e83c913d1630656a322abd16f69
                 </div>
               </div>
 
@@ -118,9 +121,26 @@
     </main>
 
     <footer class="mt-8 text-center text-sm text-slate-500">© 2025 CheckWeight.</footer>
+<<<<<<< HEAD
   </div>
 
   <script>
+=======
+  </div>
+
+  <!-- Article Modal -->
+  <div id="modal" class="fixed inset-0 bg-black/40 hidden items-center justify-center p-4">
+    <div class="bg-white w-full max-w-2xl rounded-2xl p-6 soft-card relative">
+      <button id="modal-close" class="absolute right-4 top-4 text-slate-500">✕</button>
+      <h4 id="modal-title" class="text-xl font-bold"></h4>
+      <div id="modal-meta" class="text-xs text-slate-500 mt-1"></div>
+      <div id="modal-body" class="mt-4 text-slate-700"></div>
+    </div>
+  </div>
+
+  <script>
+
+>>>>>>> e03066974b025e83c913d1630656a322abd16f69
     // UI elements
     const btnCalc = document.getElementById('btn-calc');
     const panelCalc = document.getElementById('panel-calc');
@@ -134,7 +154,15 @@
     const idealWeightEl = document.getElementById('ideal-weight');
     const timeEstimateEl = document.getElementById('time-estimate');
     const adviceArea = document.getElementById('advice-area');
+<<<<<<< HEAD
     
+=======
+
+
+    // Toggle panels
+    btnCalc.addEventListener('click', ()=>{ panelCalc.scrollIntoView({behavior:'smooth'}) });
+
+>>>>>>> e03066974b025e83c913d1630656a322abd16f69
     // BMI calculation & ideal weight estimation
     function calculateBMI(weightKg, heightCm){
       const h = heightCm / 100.0;
@@ -245,10 +273,6 @@
       resultCard.classList.add('hidden');
     }
     });
-
-
-    
-
 
   </script>
 </body>
