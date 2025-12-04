@@ -26,7 +26,3 @@ CARA MENJALANKAN
 1. BUAT AKUN ADMIN (python manage.py createsuperuser)
 2. Isi username, email (opsional), dan password
 3. AKSES WEB ADMIN (Login dengan akun admin yang sudah dibuat sebelumnya)
-
--CATATAN-
-– Tidak perlu XAMPP, karena Django sudah punya database SQLite bawaan
-– Project ini langsung bisa berjalan tanpa konfigurasi tambahan
