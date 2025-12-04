@@ -44,7 +44,7 @@
 
         <!-- Filter Category -->
         <div class="mb-4">
-            <form method="GET" action="">
+            <form method="GET" action="{% url 'artikel' %}">
                 <select id="article-category" name="category"
                         class="rounded-lg border px-3 py-2 text-sm"
                         onchange="this.form.submit()">
@@ -58,6 +58,7 @@
             </form>
         </div>
 
+<<<<<<< HEAD
        <!-- Article list -->
             {% if articles %}
               {% for article in articles %}
@@ -79,6 +80,32 @@
             </p>
                  {% endif %}
 
+=======
+        <!-- Article list -->
+        {% for article in articles %}
+            <div class="mb-4 p-4 bg-white rounded-lg shadow">
+                <h2 class="text-lg font-bold">{{ article.title }}</h2>
+
+                
+                <p class="text-xs text-slate-400 mt-1">
+                    Kategori: {{ article.category.name }}
+                </p>
+
+                <p class="mt-2 text-sm leading-relaxed text-slate-700">
+                    {{ article.content|truncatewords:20 }}
+                </p>
+
+                {% if article.link %}
+                    <a href="{{ article.link }}" target="_blank"
+                       class="text-blue-600 text-sm hover:underline mt-2 inline-block">
+                        Baca Selengkapnya →
+                    </a>
+                {% endif %}
+            </div>
+        {% empty %}
+            <p class="text-center text-gray-500">Tidak ada artikel ditemukan.</p>
+        {% endfor %}
+>>>>>>> e03066974b025e83c913d1630656a322abd16f69
 
     </main>
 
@@ -88,7 +115,10 @@
 
 </div>
 
+<<<<<<< HEAD
 </div>
 
+=======
+>>>>>>> e03066974b025e83c913d1630656a322abd16f69
 </body>
 </html>
