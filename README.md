@@ -1,5 +1,6 @@
 CheckWeight adalah website yang digunakan untuk menghitung Body Mass Index (BMI), memberikan estimasi berat badan ideal, serta menyajikan artikel kesehatan.
 Website ini juga memiliki fitur gamifikasi berupa avatar yang berubah sesuai kategori BMI pengguna agar pengalaman lebih menarik.
+
 Fitur-fitur :
 1. Kalkulator BMI
 2. estimasi berat ideal
