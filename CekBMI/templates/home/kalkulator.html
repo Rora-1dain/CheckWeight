@@ -8,13 +8,32 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     /* Custom styles for avatar transitions */
-    .avatar-box { width:160px; height:160px; display:flex; align-items:center; justify-content:center; border-radius:12px; }
-    .pulse { animation: pulse 1.6s infinite; }
-    @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.03); } 100% { transform: scale(1); } }
+    .avatar-box {
+      width: 160px;
+      height: 160px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+    }
+
+    .pulse {
+      animation: pulse 1.6s;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.03); }
+      100% { transform: scale(1); }
+    }
+
     /* Simple card shadows */
-    .soft-card { box-shadow: 0 6px 18px rgba(16,24,40,0.06), 0 1px 2px rgba(16,24,40,0.04); }
+    .soft-card {
+      box-shadow: 0 6px 18px rgba(16,24,40,0.06), 0 1px 2px rgba(16,24,40,0.04);
+    }
   </style>
 </head>
+
 <body class="bg-gradient-to-br from-slate-50 to-white min-h-screen text-slate-800">
   <div class="max-w-6xl mx-auto p-6">
     <header class="flex items-center justify-between mb-6">
@@ -26,14 +45,13 @@
         </div>
       </div>
       <nav class="flex gap-3 items-center">
-        <button id="btn-calc" ></button>
-        <a href="{% url 'artikel' %}" class="px-4 py-2 rounded-lg bg-white soft-card hover:shadow-md">Artikel</a>
+        <button id="btn-calc" class="px-4 py-2 rounded-lg bg-white soft-card hover:shadow-md">Kalkulator</button>
+        <a href="artikel.html" class="px-4 py-2 rounded-lg bg-white soft-card hover:shadow-md">Artikel</a>
       </nav>
     </header>
 
     <main class="grid grid-cols-1 gap-6">
-      <!-- Left column: Calculator -->
-       
+      <!-- Calculator panel -->
       <section id="panel-calc" class="bg-white p-6 rounded-2xl soft-card">
         <div class="flex items-start gap-6">
           <div class="flex-1">
@@ -43,19 +61,19 @@
             <form id="bmi-form" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <label class="text-sm font-medium">Berat (kg)</label>
-                <input id="weight" type="number" min="10" step="0.1" class="mt-1 w-full rounded-lg border px-3 py-2" placeholder="mis. 70" required>
+                <input id="weight" name="weight" type="number" min="10" step="0.1" class="mt-1 w-full rounded-lg border px-3 py-2" placeholder="mis. 70" required>
               </div>
               <div>
                 <label class="text-sm font-medium">Tinggi (cm)</label>
-                <input id="height" type="number" min="80" step="0.1" class="mt-1 w-full rounded-lg border px-3 py-2" placeholder="mis. 170" required>
+                <input id="height" name="height" type="number" min="80" step="0.1" class="mt-1 w-full rounded-lg border px-3 py-2" placeholder="mis. 170" required>
               </div>
               <div>
                 <label class="text-sm font-medium">Umur (tahun)</label>
-                <input id="age" type="number" min="5" max="120" class="mt-1 w-full rounded-lg border px-3 py-2" placeholder="mis. 30" required>
+                <input id="age" name="age" type="number" min="5" max="120" class="mt-1 w-full rounded-lg border px-3 py-2" placeholder="mis. 30" required>
               </div>
               <div>
                 <label class="text-sm font-medium">Gender</label>
-                <select id="gender" class="mt-1 w-full rounded-lg border px-3 py-2">
+                <select id="gender" name="gender" class="mt-1 w-full rounded-lg border px-3 py-2">
                   <option value="male">Laki-laki</option>
                   <option value="female">Perempuan</option>
                 </select>
@@ -90,16 +108,14 @@
                 </div>
               </div>
 
-              <div class="mt-4 text-sm text-slate-600" id="advice-area">
-              </div>
+              <div class="mt-4 text-sm text-slate-600" id="advice-area"></div>
             </div>
-
           </div>
 
           <!-- Right column: avatar + quick tips -->
           <aside class="w-44 hidden md:block">
             <div class="p-4 rounded-xl bg-gradient-to-b from-white to-slate-50 soft-card text-center">
-              <div class="mx-auto avatar-box bg-gradient-to-tr from-violet-400 to-fuchsia-400 text-white text-4xl font-bold mb-3" id="side-avatar">🙂</div>
+              <div id="side-avatar" class="mx-auto avatar-box bg-gradient-to-tr from-violet-400 to-fuchsia-400 text-white text-4xl font-bold mb-3">🙂</div>
               <div class="text-sm font-semibold" id="side-status">--</div>
               <p class="text-xs text-slate-500 mt-2">Avatar menunjukkan status BMI kamu — visual cepat untuk memahami hasil.</p>
             </div>
@@ -120,8 +136,9 @@
     <footer class="mt-8 text-center text-sm text-slate-500">© 2025 CheckWeight.</footer>
   </div>
 
+  <!-- Script -->
   <script>
-    // UI elements
+    // DOM element references (cached)
     const btnCalc = document.getElementById('btn-calc');
     const panelCalc = document.getElementById('panel-calc');
     const form = document.getElementById('bmi-form');
@@ -134,40 +151,60 @@
     const idealWeightEl = document.getElementById('ideal-weight');
     const timeEstimateEl = document.getElementById('time-estimate');
     const adviceArea = document.getElementById('advice-area');
-    
-    // BMI calculation & ideal weight estimation
-    function calculateBMI(weightKg, heightCm){
+
+    // Form inputs
+    const weightEl = document.getElementById('weight');
+    const heightEl = document.getElementById('height');
+    const ageEl = document.getElementById('age');
+    const genderEl = document.getElementById('gender');
+
+    // Avatar mapping (emoji + Tailwind gradient classes + title)
+    const AVATARS = {
+      'Underweight': { emoji:'🥺', color:'from-sky-200 to-sky-400', title:'Underweight' },
+      'Normal (Sehat)': { emoji:'😄', color:'from-emerald-300 to-emerald-500', title:'Sehat' },
+      'Overweight': { emoji:'😅', color:'from-amber-300 to-amber-500', title:'Perlu Perbaikan' },
+      'Obese': { emoji:'⚠️', color:'from-rose-300 to-rose-500', title:'Risiko Kesehatan' }
+    };
+
+    // Utility: apply gradient classes to an element (resets previous gradient classes added by this script)
+    function applyGradient(el, colorClasses) {
+      // remove any from-*/to-* and bg-gradient-to-* we added previously
+      el.classList.remove('bg-gradient-to-tr','from-sky-200','to-sky-400','from-emerald-300','to-emerald-500','from-amber-300','to-amber-500','from-rose-300','to-rose-500','from-slate-200','to-slate-400','from-violet-400','to-fuchsia-400');
+      // add new gradient classes
+      el.classList.add('bg-gradient-to-tr');
+      colorClasses.split(' ').forEach(c => el.classList.add(c));
+    }
+
+    // Calculation helpers
+    function calculateBMI(weightKg, heightCm) {
       const h = heightCm / 100.0;
-      const bmi = weightKg / (h*h);
+      const bmi = weightKg / (h * h);
       return +bmi.toFixed(1);
     }
 
-    function bmiCategory(bmi){
-      if(bmi < 18.5) return 'Underweight';
-      if(bmi < 25) return 'Normal (Sehat)';
-      if(bmi < 30) return 'Overweight';
+    function bmiCategory(bmi) {
+      if (bmi < 18.5) return 'Underweight';
+      if (bmi < 25) return 'Normal (Sehat)';
+      if (bmi < 30) return 'Overweight';
       return 'Obese';
     }
 
-    // Simple ideal weight estimation: midpoint of BMI 18.5-24.9
-    function estimateIdealWeight(heightCm){
-      const h = heightCm/100;
+    function estimateIdealWeight(heightCm) {
+      const h = heightCm / 100;
       const low = 18.5 * h * h;
       const high = 24.9 * h * h;
-      const mid = (low+high)/2;
+      const mid = (low + high) / 2;
       return +mid.toFixed(1);
     }
 
-    // Time estimate: assume safe loss 0.25-0.5 kg/week if need to lose
-    function estimateTime(currentWeight, idealWeight){
+    function estimateTime(currentWeight, idealWeight) {
       const diff = Math.abs(currentWeight - idealWeight);
-      if(diff < 0.5) return 0;
-      const weeksMin = Math.ceil(diff / 0.5);
-      return weeksMin; // minimal weeks to reach at healthy pace
+      if (diff < 0.5) return 0;
+      return Math.ceil(diff / 0.5);
     }
 
-    function adviceForCategory(cat){
-      switch(cat){
+    function adviceForCategory(cat) {
+      switch (cat) {
         case 'Underweight': return 'Pertimbangkan meningkatkan asupan kalori nutrisi-dense & latihan beban ringan. Konsultasi ahli gizi jika diperlukan.';
         case 'Normal (Sehat)': return 'Bagus! Pertahankan pola makan seimbang, aktivitas fisik rutin, dan tidur cukup.';
         case 'Overweight': return 'Mulai dengan defisit kalori moderat dan aktivitas fisik teratur (jalan, olahraga ringan). Hindari diet ekstrem.';
@@ -176,35 +213,41 @@
       }
     }
 
-    // Avatar mapping (simple emoji + color themes)
-    const AVATARS = {
-      'Underweight': { emoji:'🥺', color:'from-sky-200 to-sky-400', title:'Underweight' },
-      'Normal (Sehat)': { emoji:'😄', color:'from-emerald-300 to-emerald-500', title:'Sehat' },
-      'Overweight': { emoji:'😅', color:'from-amber-300 to-amber-500', title:'Perlu Perbaikan' },
-      'Obese': { emoji:'⚠️', color:'from-rose-300 to-rose-500', title:'Risiko Kesehatan' }
-    };
+    // Render avatar + side status given category
+    function showAvatarFor(category) {
+      const meta = AVATARS[category] || { emoji:'🙂', color:'from-slate-200 to-slate-400', title:category };
 
-    function showAvatarFor(category){
-      const meta = AVATARS[category] || {emoji:'🙂', color:'from-slate-200 to-slate-400', title:category};
+      // update main avatar
       avatarBox.textContent = meta.emoji;
-      avatarBox.style.background = '';
-      avatarBox.className = 'avatar-box';
-      // update side avatar
-      sideAvatar.textContent = meta.emoji; sideAvatar.className = 'mx-auto avatar-box text-4xl font-bold';
+      // ensure avatar-box base class exists, then apply gradient
+      avatarBox.classList.add('avatar-box');
+      applyGradient(avatarBox, meta.color);
+
+      // add pulse
+      avatarBox.classList.add('pulse');
+      setTimeout(() => avatarBox.classList.remove('pulse'), 600);
+
+      // update side avatar and status
+      sideAvatar.textContent = meta.emoji;
+      sideAvatar.classList.add('avatar-box','text-4xl','font-bold');
+      applyGradient(sideAvatar, meta.color);
       sideStatus.textContent = meta.title;
-      // subtle pulse for attention
-      avatarBox.classList.add('pulse'); setTimeout(()=> avatarBox.classList.remove('pulse'), 1600);
     }
 
-    form.addEventListener('submit', (e)=>{
+    // On submit
+    form.addEventListener('submit', (e) => {
       e.preventDefault();
-      const w = parseFloat(document.getElementById('weight').value);
-      const h = parseFloat(document.getElementById('height').value);
-      const age = parseInt(document.getElementById('age').value,10);
-      const gender = document.getElementById('gender').value;
-      if(!w || !h || !age){ alert('Isi semua field dengan nilai valid.'); return; }
+      const w = parseFloat(weightEl.value);
+      const h = parseFloat(heightEl.value);
+      const age = parseInt(ageEl.value, 10);
+      const gender = genderEl.value;
 
-      const bmi = calculateBMI(w,h);
+      if (!w || !h || !age) {
+        alert('Isi semua field dengan nilai valid.');
+        return;
+      }
+
+      const bmi = calculateBMI(w, h);
       const category = bmiCategory(bmi);
       const ideal = estimateIdealWeight(h);
       const weeks = estimateTime(w, ideal);
@@ -221,32 +264,46 @@
       showAvatarFor(category);
 
       // Save last result locally (optional)
-      const last = { dt: (new Date()).toISOString(), weight: w, height:h, age:age, gender:gender, bmi:bmi, category:category, ideal:ideal };
-      try { localStorage.setItem('cmw_last', JSON.stringify(last)); }
-      catch(e){}
+      const last = { dt:(new Date()).toISOString(), weight:w, height:h, age:age, gender:gender, bmi:bmi, category:category, ideal:ideal };
+      try { localStorage.setItem('cmw_last', JSON.stringify(last)); } catch(e) { /* ignore */ }
     });
 
     // Reset
-    document.getElementById('btn-reset').addEventListener('click', ()=>{
-      form.reset(); resultCard.classList.add('hidden');
-    });
-
-    // Load last if exist
-    window.addEventListener('load', ()=>{
-    init();
-    const last = localStorage.getItem('cmw_last');
-    if(last){
-      const obj = JSON.parse(last);
-      document.getElementById('weight').value = obj.weight;
-      document.getElementById('height').value = obj.height;
-      document.getElementById('age').value = obj.age;
-      document.getElementById('gender').value = obj.gender;
-      // Tidak auto-submit lagi
+    document.getElementById('btn-reset').addEventListener('click', () => {
+      form.reset();
       resultCard.classList.add('hidden');
-    }
+      // restore default avatars
+      applyGradient(avatarBox, 'from-slate-200 to-slate-400');
+      avatarBox.textContent = '🙂';
+      sideAvatar.textContent = '🙂';
+      sideStatus.textContent = '--';
     });
 
+    // On DOM loaded: set up initial UI and restore last
+    window.addEventListener('DOMContentLoaded', () => {
+      // ensure kalkulator button has text (useful when this page is embedded)
+      if (btnCalc && !btnCalc.textContent.trim()) btnCalc.textContent = 'Kalkulator';
 
+      // Try to load last
+      const last = localStorage.getItem('cmw_last');
+      if (last) {
+        try {
+          const obj = JSON.parse(last);
+          if (obj.weight) weightEl.value = obj.weight;
+          if (obj.height) heightEl.value = obj.height;
+          if (obj.age) ageEl.value = obj.age;
+          if (obj.gender) genderEl.value = obj.gender;
+          // keep result hidden until user submit
+          resultCard.classList.add('hidden');
+        } catch(e) {
+          // ignore parse errors
+        }
+      }
+
+      // default avatar gradient
+      applyGradient(avatarBox, 'from-slate-200 to-slate-400');
+      applyGradient(sideAvatar, 'from-violet-400 to-fuchsia-400');
+    });
   </script>
 </body>
 </html>
